@@ -1,0 +1,175 @@
+class BinaryNode:
+    def __init__(self, value):
+        self.value = value
+        self.left_child = None
+        self.right_child = None
+
+    def add_left(self, node):
+        self.left_child = node
+
+    def add_right(self, node):
+        self.right_child = node
+    
+    def __str__(self, level=0):
+        indent = "  " * level
+        result = f"{indent}{self.value}:"
+        
+        if self.left_child:
+            result += f"\n{self.left_child.__str__(level + 1)}"
+        else:
+            if self.right_child:
+                result += f"\n{indent}" + "  None"
+        if self.right_child:
+            result += f"\n{self.right_child.__str__(level + 1)}"
+        else:
+            if self.left_child:
+                result += f"\n{indent}" + "  None"
+
+        return result
+    
+    def find_node(self, target):
+        '''Recursively search this node's subtree looking for the target value.
+        Return the node that contains the value or None.'''
+        # See if this node contains the value.
+        if self.value == target:
+            return self
+        
+        # Search the left child subtree.
+        if self.left_child != None:
+            result = self.left_child.find_node(target)
+            if result != None:
+                return result
+
+        # Search the right child subtree.
+        if self.right_child != None:
+            result = self.right_child.find_node(target)
+            if result != None:
+                return result
+
+        # We did not find the value. Return None.
+        return None
+    
+    def traverse_preorder(self):
+        result = []
+        result.append(self.value)
+        
+        if self.left_child:
+            result.extend(self.left_child.traverse_preorder())
+        
+        if self.right_child:
+            result.extend(self.right_child.traverse_preorder())
+        
+        return result
+    
+    def traverse_inorder(self):
+        result = []
+        
+        if self.left_child:
+            result.extend(self.left_child.traverse_inorder())
+        
+        result.append(self.value)
+        
+        if self.right_child:
+            result.extend(self.right_child.traverse_inorder())
+        
+        return result
+    
+    def traverse_postorder(self):
+        result = []
+        
+        if self.left_child:
+            result.extend(self.left_child.traverse_postorder())
+        
+        if self.right_child:
+            result.extend(self.right_child.traverse_postorder())
+        
+        result.append(self.value)
+        
+        return result
+    
+    def traverse_breadth_first(self):
+        result = []
+        queue = [self]
+        
+        while queue:
+            node = queue.pop(0)
+            result.append(node.value)
+            
+            if node.left_child:
+                queue.append(node.left_child)
+            
+            if node.right_child:
+                queue.append(node.right_child)
+        
+        return result
+
+class NaryNode:
+    def __init__(self, value):
+        self.value = value
+        self.children = []
+    
+    def add_child(self, node):
+        self.children.append(node)
+    
+    def __str__(self, level=0):
+        indent = "  " * level
+        result = f"{indent}{self.value}:"
+        
+        for child in self.children:
+            result += f"\n{child.__str__(level + 1)}"
+        return result
+    
+    def find_node(self, target):
+        '''Recursively search this node's subtree looking for the target value.
+        Return the node that contains the value or None.'''
+        # See if this node contains the value.
+        if self.value == target:
+            return self
+
+        # Search the child subtrees.
+        for child in self.children:
+            result = child.find_node(target)
+            if result != None:
+                return result
+
+        # We did not find the value. Return None.
+        return None
+    
+    def traverse_preorder(self):
+        result = []
+        result.append(self.value)
+        
+        for child in self.children:
+            result.extend(child.traverse_preorder())
+        
+        return result
+    
+    def traverse_postorder(self):
+        result = []
+        
+        for child in self.children:
+            result.extend(child.traverse_postorder())
+        
+        result.append(self.value)
+        
+        return result
+    
+    def traverse_breadth_first(self):
+        result = []
+        queue = [self]
+        
+        while queue:
+            node = queue.pop(0)
+            result.append(node.value)
+            
+            for child in node.children:
+                queue.append(child)
+        
+        return result
+
+def findnode(node,target):
+    nd = node.find_node(target)
+    if nd:
+        return f"Found {nd.value}"
+    else:
+        return "Not found"
