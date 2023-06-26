@@ -1,0 +1,47 @@
+import requests
+from bs4 import BeautifulSoup as bs
+
+availableregions = {'brazil': "BR", "europe nordic & east": "EUNE", "europe west": "EUW",
+"latin america north": "LAN", "latin america south": "LAS", "north america": "NA", "oceania": "OCE",
+"russia": "RU", "turkey": "TR", "japan": "JP", "republic of korea": "KR", "the philippines": "PH",
+"singapore, malaysia, & indonesia": "SG", "taiwan, hong kong, and macao": "TW", "thailand": "TH",
+"vietnam": "VN", "public beta environment": "PBE"}
+
+lst = []
+for values in availableregions:
+    lst.append(availableregions[values])
+
+def takeinputs():
+    verifiedregion = None
+    while verifiedregion == None:
+        region = input("Select region by name or code: ")
+        verifiedregion = verifyinputs(region)
+    loltag = None
+    while loltag == None:
+        loltag = input('Input Tag: ')
+        try:
+            r = requests.get('https://op.gg/summoners/'+verifiedregion+'/'+loltag)
+        except:
+            print("Invalid Tag")
+            loltag = None       
+    
+    soup = bs(r.content, 'html.parser')
+    rank = soup.find()
+
+def extract_player_info(content):
+    soup = bs(content, 'html.parser')
+    rating_element = soup.find(class_='GameAverageStats').find(class_='tierRank')
+    win_loss_element = soup.find(class_='GameAverageStats').find(class_='winratio')
+    rating = rating_element.text.strip() if rating_element else 'N/A'
+    win_loss_ratio = win_loss_element.text.strip() if win_loss_element else 'N/A'
+    return rating, win_loss_ratio
+
+def verifyinputs(region):
+    if region.lower() in availableregions:
+        return availableregions[region.lower()]
+    if region.upper() in lst:
+        return region.lower()
+    print("Incorrect Input")
+    return None
+
+takeinputs()
