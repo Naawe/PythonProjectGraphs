@@ -7,6 +7,36 @@ availableregions = {'brazil': "BR", "europe nordic & east": "EUNE", "europe west
 "singapore, malaysia, & indonesia": "SG", "taiwan, hong kong, and macao": "TW", "thailand": "TH",
 "vietnam": "VN", "public beta environment": "PBE"}
 
+data = {
+    "speedtest_mode": "",
+    "speedtest_id": "1",
+}
+
+cookies = {
+    "CAKEPHP": "af57ps7vtafsa3firr35453gtb",
+    "CookieConsent": "{stamp:%27ojcUTA3IjOXHgdsGXA9u9toM7iRROW28zzy1o3KlbxZssbrOj3a81Q==%27%2Cnecessary:true%2Cpreferences:true%2Cstatistics:true%2Cmarketing:true%2Cver:2%2Cutc:1654954695891%2Cregion:%27us%27}",
+    "CakeCookie[lang]": "Q2FrZQ%3D%3D.5exP",
+    "CakeCookie[alternate_language_suggestion]": "Q2FrZQ%3D%3D.9PBdWA%3D%3D",
+}
+
+headers = {
+    "accept": "*/*",
+    "accept-encoding": "gzip, deflate, br",
+    "accept-language": "en-US,en;q=0.9",
+    "content-length": "30",
+    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+    "cookie": "CAKEPHP=af57ps7vtafsa3firr35453gtb; CookieConsent={stamp:'ojcUTA3IjOXHgdsGXA9u9toM7iRROW28zzy1o3KlbxZssbrOj3a81Q==',necessary:true,preferences:true,statistics:true,marketing:true,ver:2,utc:1654954695891,region:'us'}; CakeCookie[lang]=Q2FrZQ==.5exP; CakeCookie[alternate_language_suggestion]=Q2FrZQ==.9PBdWA==",
+    "dnt": "1",
+    "origin": "https://10fastfingers.com",
+    "referer": "https://10fastfingers.com/typing-test/english",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "sec-gpc": "1",
+    "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.115 Safari/537.36",
+    "x-requested-with": "XMLHttpRequest",
+}
+
 lst = []
 for values in availableregions:
     lst.append(availableregions[values])
@@ -20,13 +50,21 @@ def takeinputs():
     while loltag == None:
         loltag = input('Input Tag: ')
         try:
-            r = requests.get('https://op.gg/summoners/'+verifiedregion+'/'+loltag)
+            response_object = requests.post('https://op.gg/summoners/'+verifiedregion+'/'+loltag, data=data, cookies=cookies, headers=headers)
         except:
             print("Invalid Tag")
             loltag = None       
     
-    soup = bs(r.content, 'html.parser')
-    rank = soup.find()
+    soup = bs(response_object.text, 'html.parser')
+    tier = soup.find("div", class_="tier")
+    ratio = soup.find("div", class_="ratio")
+    tier = tier.text.strip() if tier else 'N/A'
+    ratio = ratio.text.strip() if ratio else 'N/A'
+    print(tier)
+    print(ratio)
+    
+
+
 
 def extract_player_info(content):
     soup = bs(content, 'html.parser')
