@@ -1,3 +1,7 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+from matplotlib.patches import FancyArrowPatch
+
 class BinaryNode:
     def __init__(self, value):
         self.value = value
@@ -27,6 +31,29 @@ class BinaryNode:
 
         return result
     
+    def plot(self):
+        """
+        Plot the binary tree rooted at this node using Matplotlib.
+        """
+
+        def plot_subtree(node, x, y, width, ax, level=0):
+            if node:
+                ax.annotate(str(node.value), (x, y), fontsize=16, ha="center", va="center",
+                            bbox=dict(boxstyle="circle,pad=0.5", edgecolor="black", facecolor="white"))
+                if node.left_child:
+                    ax.add_patch(FancyArrowPatch((x, y - 0.2), (x - width / 4, y - 1), color="black", arrowstyle='-',
+                                                 mutation_scale=15, linewidth=0.5))
+                    plot_subtree(node.left_child, x - width / 4, y - 1, width / 2, ax, level + 1)
+                if node.right_child:
+                    ax.add_patch(FancyArrowPatch((x, y - 0.2), (x + width / 4, y - 1), color="black", arrowstyle='-',
+                                                 mutation_scale=15, linewidth=0.5))
+                    plot_subtree(node.right_child, x + width / 4, y - 1, width / 2, ax, level + 1)
+
+        fig, ax = plt.subplots(figsize=(8, 8))  # Adjust the figure size as needed
+        plot_subtree(self, 0, 0, 1, ax)
+        ax.axis("off")
+        plt.show()
+
     def find_node(self, target):
         '''Recursively search this node's subtree looking for the target value.
         Return the node that contains the value or None.'''
@@ -102,74 +129,21 @@ class BinaryNode:
                 queue.append(node.right_child)
         
         return result
-
-class NaryNode:
-    def __init__(self, value):
-        self.value = value
-        self.children = []
     
-    def add_child(self, node):
-        self.children.append(node)
-    
-    def __str__(self, level=0):
-        indent = "  " * level
-        result = f"{indent}{self.value}:"
-        
-        for child in self.children:
-            result += f"\n{child.__str__(level + 1)}"
-        return result
-    
-    def find_node(self, target):
-        '''Recursively search this node's subtree looking for the target value.
-        Return the node that contains the value or None.'''
-        # See if this node contains the value.
-        if self.value == target:
-            return self
-
-        # Search the child subtrees.
-        for child in self.children:
-            result = child.find_node(target)
-            if result != None:
-                return result
-
-        # We did not find the value. Return None.
-        return None
-    
-    def traverse_preorder(self):
-        result = []
-        result.append(self.value)
-        
-        for child in self.children:
-            result.extend(child.traverse_preorder())
-        
-        return result
-    
-    def traverse_postorder(self):
-        result = []
-        
-        for child in self.children:
-            result.extend(child.traverse_postorder())
-        
-        result.append(self.value)
-        
-        return result
-    
-    def traverse_breadth_first(self):
-        result = []
-        queue = [self]
-        
-        while queue:
-            node = queue.pop(0)
-            result.append(node.value)
-            
-            for child in node.children:
-                queue.append(child)
-        
-        return result
-
 def findnode(node,target):
     nd = node.find_node(target)
     if nd:
         return f"Found {nd.value}"
     else:
         return "Not found"
+    
+root = BinaryNode("CEO")
+root.add_left(BinaryNode("CFO"))
+root.add_right(BinaryNode("CTO"))
+root.left_child.add_left(BinaryNode(4))
+root.left_child.add_right(BinaryNode(5))
+root.right_child.add_left(BinaryNode(6))
+root.right_child.add_right(BinaryNode(7))
+
+# Visualize the tree using Matplotlib
+root.plot()
