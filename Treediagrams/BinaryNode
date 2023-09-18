@@ -1,6 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch
+import tkinter as tk
 
 class BinaryNode:
     def __init__(self, value):
@@ -31,7 +32,7 @@ class BinaryNode:
 
         return result
     
-    def plot(self):
+    def plot(self,node):
         """
         Plot the binary tree rooted at this node using Matplotlib.
         """
@@ -50,7 +51,7 @@ class BinaryNode:
                     plot_subtree(node.right_child, x + width / 4, y - 1, width / 2, ax, level + 1)
 
         fig, ax = plt.subplots(figsize=(8, 8))  # Adjust the figure size as needed
-        plot_subtree(self, 0, 0, 1, ax)
+        plot_subtree(node, 0, 0, 1, ax)
         ax.axis("off")
         plt.show()
 
@@ -130,20 +131,3 @@ class BinaryNode:
         
         return result
     
-def findnode(node,target):
-    nd = node.find_node(target)
-    if nd:
-        return f"Found {nd.value}"
-    else:
-        return "Not found"
-    
-root = BinaryNode("CEO")
-root.add_left(BinaryNode("CFO"))
-root.add_right(BinaryNode("CTO"))
-root.left_child.add_left(BinaryNode(4))
-root.left_child.add_right(BinaryNode(5))
-root.right_child.add_left(BinaryNode(6))
-root.right_child.add_right(BinaryNode(7))
-
-# Visualize the tree using Matplotlib
-root.plot()
